@@ -8,18 +8,18 @@ const setIsGameActive = ({ isActive }) => {
 };
 
 class Cell {
-	constructor(gridX, gridY) {
+	constructor({ posX, posY }) {
 		this.context = getCanvasContext();
-		this.gridX = gridX;
-		this.gridY = gridY;
+		this.posX = posX;
+		this.posY = posY;
 		this.isActive = Math.random() > 0.5;
 	}
 
 	render() {
 		this.context.fillStyle = this.isActive ? CONSTANTS.COLORS.CELL.ACTIVE : CONSTANTS.COLORS.CELL.INACTIVE;
 		this.context.fillRect(
-			this.gridX * CONSTANTS.CELL_WIDTH,
-			this.gridY * CONSTANTS.CELL_WIDTH,
+			this.posX * CONSTANTS.CELL_WIDTH,
+			this.posY * CONSTANTS.CELL_WIDTH,
 			CONSTANTS.CELL_WIDTH,
 			CONSTANTS.CELL_WIDTH,
 		);
@@ -28,19 +28,19 @@ class Cell {
 
 class Control {
 	constructor({ columns, rows }) {
-		this.columns = Math.ceil(columns / 10);
-		this.rows = Math.ceil(rows / 10);
 		this.cells = [];
+		this.rows = Math.ceil(rows / 10);
+		this.columns = Math.ceil(columns / 10);
 
 		this.context = getCanvasContext();
-		this.drawCells();
-		this.gameLoop();
+		this.renderCells();
+		this.initiate();
 	}
 
-	drawCells() {
+	renderCells() {
 		for (let y = 0; y < this.rows; y++) {
 			for (let x = 0; x < this.columns; x++) {
-				this.cells.push(new Cell(x, y));
+				this.cells.push(new Cell({ posX: x, posY: y }));
 			}
 		}
 	}
@@ -50,11 +50,7 @@ class Control {
 			return false;
 		}
 
-		return this.cells[this.gridToIndex(x, y)].isActive ? 1 : 0;
-	}
-
-	gridToIndex(x, y) {
-		return x + y * this.columns;
+		return this.cells[this.getGridPoint(x, y)].isActive ? 1 : 0;
 	}
 
 	getNextActiveState() {
@@ -70,7 +66,7 @@ class Control {
 					this.isActive(x + 1, y) +
 					this.isActive(x + 1, y + 1);
 
-				const centerIndex = this.gridToIndex(x, y);
+				const centerIndex = this.getGridPoint(x, y);
 
 				if (numAlive == 2) {
 					this.cells[centerIndex].nextIsActive = this.cells[centerIndex].isActive;
@@ -87,7 +83,11 @@ class Control {
 		}
 	}
 
-	gameLoop() {
+	getGridPoint(x, y) {
+		return x + y * this.columns;
+	}
+
+	initiate() {
 		this.getNextActiveState();
 
 		const canvas = getCanvas();
@@ -98,7 +98,7 @@ class Control {
 		}
 
 		setTimeout(() => {
-			window.requestAnimationFrame(() => this.gameLoop());
+			window.requestAnimationFrame(() => this.initiate());
 		}, 100);
 	}
 }
