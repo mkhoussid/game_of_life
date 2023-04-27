@@ -1,0 +1,38 @@
+* {
+	outline: 0;
+	margin: 0;
+	box-sizing: border-box;
+}
+
+body {
+	height: 100vh;
+	width: 100%;
+	overflow: hidden;
+	display: grid;
+	place-items: center;
+	background-image: linear-gradient(120deg, dodgerblue 0%, darkturquoise 50%, palegreen 100%);
+}
+
+.start-button {
+	background-color: slateblue;
+	color: snow;
+	cursor: pointer;
+	padding: 1rem 1.6rem;
+	text-shadow: rgba(0, 0, 0, 0.5) 0.25rem 0.125rem 8px;
+	box-shadow: 0.125rem 0.125rem 10px black;
+	transition: 0.2s ease-in-out;
+	user-select: none;
+	font-size: 2rem;
+	text-transform: uppercase;
+}
+
+.start-button:hover {
+	box-shadow: slateblue 0 1px 30px;
+	background-color: snow;
+	color: slateblue;
+}
+
+canvas {
+	box-shadow: 0 0 300px rgba(0, 0, 0, 1);
+	background-color: snow;
+}
